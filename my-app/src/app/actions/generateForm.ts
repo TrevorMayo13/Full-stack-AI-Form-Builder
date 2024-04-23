@@ -47,7 +47,7 @@ export async function generateForm(
         const json = await response.json();
         revalidatePath("/");
         return {
-            message: "success",
+            message: "success", data: json
         }
     } catch (e) {
         console.log(e);
