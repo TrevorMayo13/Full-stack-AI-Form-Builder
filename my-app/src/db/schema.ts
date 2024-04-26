@@ -7,9 +7,12 @@ import {
     serial,
     boolean,
     pgEnum,
+    jsonb
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "next-auth/adapters";
 import { relations } from "drizzle-orm";
+import { randomUUID } from "crypto";
+
 export const formElements = pgEnum("field_type", [
     "RadioGroup",
     "Select",
@@ -17,7 +20,6 @@ export const formElements = pgEnum("field_type", [
     "Textarea",
     "Switch",
 ]);
-import { randomUUID } from "crypto";
 
 export const users = pgTable("user", {
     id: text("id")
@@ -85,11 +87,11 @@ export const forms = pgTable("forms", {
 });
 
 export const formsRelations = relations(forms, ({ many, one }) => ({
-  questions: many(questions),
-  user: one(users, {
-    fields: [forms.userId],
-    references: [users.id]
-  })
+    questions: many(questions),
+    user: one(users, {
+        fields: [forms.userId],
+        references: [users.id],
+    }),
 }));
 
 export const questions = pgTable("questions", {
@@ -99,13 +101,13 @@ export const questions = pgTable("questions", {
     formId: integer("form_id"),
 });
 
-export const questionsRelations = relations(questions, ({one, many})=>({
-  form: one(forms, {
-    fields: [questions.formId],
-    references: [forms.id]
-  }),
-  fieldOptions: many(fieldOptions)
-}))
+export const questionsRelations = relations(questions, ({ one, many }) => ({
+    form: one(forms, {
+        fields: [questions.formId],
+        references: [forms.id],
+    }),
+    fieldOptions: many(fieldOptions),
+}));
 
 export const fieldOptions = pgTable("field_options", {
     id: serial("id").primaryKey(),
@@ -114,9 +116,9 @@ export const fieldOptions = pgTable("field_options", {
     questionId: integer("question_id"),
 });
 
-export const fieldOptionsRelations = relations(fieldOptions, ({one})=>({
-  question: one(questions, {
-    fields: [fieldOptions.questionId],
-    references: [questions.id]
-  }),
-}))
+export const fieldOptionsRelations = relations(fieldOptions, ({ one }) => ({
+    question: one(questions, {
+        fields: [fieldOptions.questionId],
+        references: [questions.id],
+    }),
+}));

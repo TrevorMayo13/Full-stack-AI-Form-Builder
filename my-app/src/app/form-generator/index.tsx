@@ -15,6 +15,7 @@ import { generateForm } from "@/actions/generateForm";
 import { useFormState, useFormStatus } from "react-dom";
 
 import {useSession, signIn} from "next-auth/react"
+import { redirect } from "next/navigation";
 type Props = {};
 
 const initialState: {
@@ -42,6 +43,7 @@ const FormGenerator = (props: Props) => {
     useEffect(() => {
         if (state.message === "success") {
             setOpen(false);
+            redirect(`/forms/edit/` + state.data.formId)
         }
         console.log(state.data);
     }, [state, state.message]);
